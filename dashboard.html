@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Profile Summary Card -->
+    <div class="card profile-card">
+        <h3>Welcome back, Visitor!</h3>
+        <p class="summary-text">{{ data.profile.summary }}</p>
+        <div class="social-links">
+            <a href="{{ data.profile.linkedin }}" target="_blank" class="btn btn-primary"><i
+                    class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="{{ data.profile.github }}" target="_blank" class="btn btn-secondary"><i class="fab fa-github"></i>
+                GitHub</a>
+            <a href="mailto:{{ data.profile.email }}" class="btn btn-outline"><i class="fas fa-envelope"></i> Email</a>
+        </div>
+    </div>
+
+    <!-- Quick Stats / Highlights -->
+    <div class="card stat-card">
+        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+        <div class="stat-info">
+            <h4>Experience</h4>
+            <p>{{ data.experience|length }} Positions</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon"><i class="fas fa-code"></i></div>
+        <div class="stat-info">
+            <h4>Projects</h4>
+            <p>{{ data.projects|length }} Active</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="stat-info">
+            <h4>Education</h4>
+            <p>{{ data.education[0].degree }}</p>
+        </div>
+    </div>
+
+    <!-- Recent Activity / Projects Preview -->
+    <div class="card full-width">
+        <h3>Featured Projects</h3>
+        <div class="project-preview-list">
+            {% for project in data.projects[:2] %}
+            <div class="project-preview-item">
+                <h4>{{ project.title }}</h4>
+                <p>{{ project.description }}</p>
+                <div class="tags">
+                    {% for tech in project.technologies %}
+                    <span class="tag">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('projects') }}" class="view-all-link">View All Projects &rarr;</a>
+    </div>
+</div>
+{% endblock %}

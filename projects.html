@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block header %}Projects{% endblock %}
+
+{% block content %}
+<div class="projects-grid">
+    {% for project in data.projects %}
+    <div class="card project-card">
+        <div class="project-header">
+            <h3>{{ project.title }}</h3>
+            <div class="project-links">
+                <a href="{{ project.link }}" class="icon-link"><i class="fas fa-external-link-alt"></i></a>
+            </div>
+        </div>
+        <p>{{ project.description }}</p>
+        <div class="tech-stack">
+            {% for tech in project.technologies %}
+            <span class="tech-tag">{{ tech }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .project-header h3 {
+        font-size: 1.25rem;
+        color: #2d3748;
+    }
+
+    .icon-link {
+        color: #a0aec0;
+        transition: color 0.2s;
+    }
+
+    .icon-link:hover {
+        color: var(--primary-color);
+    }
+
+    .project-card p {
+        color: #718096;
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tech-tag {
+        font-size: 0.75rem;
+        background-color: rgba(126, 58, 242, 0.1);
+        color: var(--primary-color);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

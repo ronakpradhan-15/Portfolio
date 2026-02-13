@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block header %}Education{% endblock %}
+
+{% block content %}
+<div class="education-list">
+    {% for edu in data.education %}
+    <div class="card edu-card">
+        <div class="edu-icon"><i class="fas fa-university"></i></div>
+        <div class="edu-info">
+            <h3>{{ edu.school }}</h3>
+            <p class="degree">{{ edu.degree }}</p>
+            <p class="year">{{ edu.year }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .education-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .edu-card {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .edu-icon {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(0, 196, 140, 0.1);
+        /* Secondary color tint */
+        color: var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .edu-info h3 {
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+    }
+
+    .degree {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .year {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}

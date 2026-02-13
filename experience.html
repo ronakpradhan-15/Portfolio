@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block header %}Experience{% endblock %}
+
+{% block content %}
+<div class="timeline">
+    {% for job in data.experience %}
+    <div class="card timeline-item">
+        <div class="timeline-header">
+            <h3>{{ job.role }}</h3>
+            <span class="company-name">@ {{ job.company }}</span>
+            <span class="duration">{{ job.duration }}</span>
+        </div>
+        <p class="job-description">{{ job.description }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #cbd5e0;
+        z-index: 0;
+        display: none;
+        /* Hidden for simple card layout, can enable for true timeline */
+    }
+
+    .timeline-item {
+        position: relative;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .company-name {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .duration {
+        background-color: #edf2f7;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #718096;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.profile.name }} - Portfolio Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Placeholder for FontAwesome -->
+    <!-- Using a CDN for FontAwesome icons if the kit above doesn't work, standard free set -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>{{ data.profile.name.split()[0] }}<span>.</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="{% if active == 'dashboard' %}active{% endif %}">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="{% if active == 'experience' %}active{% endif %}">
+                    <a href="{{ url_for('experience') }}">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Experience</span>
+                    </a>
+                </li>
+                <li class="{% if active == 'projects' %}active{% endif %}">
+                    <a href="{{ url_for('projects') }}">
+                        <i class="fas fa-code-branch"></i>
+                        <span>Projects</span>
+                    </a>
+                </li>
+                <li class="{% if active == 'skills' %}active{% endif %}">
+                    <a href="{{ url_for('skills') }}">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Skills</span>
+                    </a>
+                </li>
+
+            </ul>
+            <div class="user-profile">
+                <div class="user-info">
+                    <p class="role">{{ data.profile.title }}</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header>
+                <h1>{% block header %}Overview{% endblock %}</h1>
+                <div class="date-display" id="dateDisplay"></div>
+            </header>
+
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button id="chat-toggle" class="chat-toggle-btn">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <h3>Ask AI About Me</h3>
+                <button id="chat-close" class="chat-close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    Hi! I'm Ronak's AI assistant. Ask me anything about his experience or skills.
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a message...">
+                <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to show date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', options);
+
+        // Chat Widget Logic
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatClose = document.getElementById('chat-close');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const chatMessages = document.getElementById('chat-messages');
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('active');
+            if (chatWindow.classList.contains('active')) {
+                chatInput.focus();
+            }
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+        });
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user-message');
+            chatInput.value = '';
+
+            // Add loading indicator
+            const loadingId = addMessage('Thinking...', 'bot-message loading');
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+
+                // Remove loading and add response
+                document.getElementById(loadingId).remove();
+                addMessage(data.response || "Sorry, I encountered an error.", 'bot-message');
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                addMessage("Sorry, I couldn't reach the server.", 'bot-message');
+            }
+        }
+
+        function addMessage(text, className) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.id = 'msg-' + Date.now();
+            msgDiv.innerText = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return msgDiv.id;
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+
+</html>
